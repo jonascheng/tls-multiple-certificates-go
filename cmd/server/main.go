@@ -7,6 +7,22 @@ import (
 	"net/http"
 )
 
+// define a call back function GetCertificate
+// this function will be called by the server when a new connection is established
+// the server will pass the client hello message to this function
+// the function should return a certificate based on the client hello message
+func GetCertificate(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	// log the client hello message
+	log.Printf("Client hello: %+v", clientHello)
+	// load certificates from files according to the server name
+	if clientHello.ServerName == "server-v1" {
+		certPair, _ := tls.LoadX509KeyPair("server-v1.crt", "server-v1.key")
+		return &certPair, nil
+	}
+	certPair, _ := tls.LoadX509KeyPair("server-v2.crt", "server-v2.key")
+	return &certPair, nil
+}
+
 func main() {
 	// setup TLS configuration
 	tlsConfig := &tls.Config{
@@ -17,14 +33,16 @@ func main() {
 	}
 
 	// load certificates from files
-	certPair_v1, _ := tls.LoadX509KeyPair("server-v1.crt", "server-v1.key")
-	certPair_v2, _ := tls.LoadX509KeyPair("server-v2.crt", "server-v2.key")
-	tlsConfig.Certificates = []tls.Certificate{certPair_v1, certPair_v2}
-	//tlsConfig.Certificates = []tls.Certificate{certPair_v2}
+	// certPair_v1, _ := tls.LoadX509KeyPair("server-v1.crt", "server-v1.key")
+	// certPair_v2, _ := tls.LoadX509KeyPair("server-v2.crt", "server-v2.key")
+	// tlsConfig.Certificates = []tls.Certificate{certPair_v1, certPair_v2}
 
 	// BuildNameToCertificate parses c.Certificates and builds c.NameToCertificate from the CommonName and SubjectAlternateName fields of each of the leaf certificates.
 	// Deprecated: NameToCertificate only allows associating a single certificate with a given name. Leave that field nil to let the library select the first compatible chain from Certificates.
 	// tlsConfig.BuildNameToCertificate()
+
+	// set GetCertificate callback function
+	tlsConfig.GetCertificate = GetCertificate
 
 	// create a new http server
 	server := &http.Server{
