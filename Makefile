@@ -29,14 +29,15 @@ run: setup server-key ## runs go run the application
 
 .PHONY: server-key
 server-key:	## setup server key
+	openssl rand -writerand /home/vagrant/.rnd
 	## Key considerations for algorithm RSA ≥ 1024-bit
 	if [ ! -f server-v1.key ]; then openssl genrsa -out server-v1.key 1024; fi;
 	## Generation of self-signed(x509) public key (PEM-encodings .pem|.crt) based on the private (.key)
-	if [ ! -f server-v1.crt ]; then openssl req -new -x509 -key server-v1.key -out server-v1.crt -days 7 -subj "/C=TW/ST=Taipei/L=Test/O=Test/OU=Test/CN=localhost/emailAddress=Test@email"; fi;
+	if [ ! -f server-v1.crt ]; then openssl req -new -x509 -key server-v1.key -out server-v1.crt -days 7 -subj "/C=TW/ST=Taipei/L=Test/O=Test/OU=Test/CN=172.31.1.10/emailAddress=Test@email"; fi;
 	## Key considerations for algorithm RSA ≥ 1024-bit
 	if [ ! -f server-v2.key ]; then openssl genrsa -out server-v2.key 1024; fi;
 	## Generation of self-signed(x509) public key (PEM-encodings .pem|.crt) based on the private (.key)
-	if [ ! -f server-v2.crt ]; then openssl req -new -x509 -key server-v2.key -out server-v2.crt -days 7 -subj "/C=TW/ST=Taipei/L=Test/O=Test/OU=Test/CN=localhost/emailAddress=Test@email"; fi;
+	if [ ! -f server-v2.crt ]; then openssl req -new -x509 -key server-v2.key -out server-v2.crt -days 7 -subj "/C=TW/ST=Taipei/L=Test/O=Test/OU=Test/CN=172.31.1.10/emailAddress=Test@email"; fi;
 
 .PHONY: help
 help: ## prints this help message

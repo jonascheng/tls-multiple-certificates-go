@@ -20,9 +20,11 @@ func main() {
 	certPair_v1, _ := tls.LoadX509KeyPair("server-v1.crt", "server-v1.key")
 	certPair_v2, _ := tls.LoadX509KeyPair("server-v2.crt", "server-v2.key")
 	tlsConfig.Certificates = []tls.Certificate{certPair_v1, certPair_v2}
+	//tlsConfig.Certificates = []tls.Certificate{certPair_v2}
 
-	// build name to certificate map
-	tlsConfig.BuildNameToCertificate()
+	// BuildNameToCertificate parses c.Certificates and builds c.NameToCertificate from the CommonName and SubjectAlternateName fields of each of the leaf certificates.
+	// Deprecated: NameToCertificate only allows associating a single certificate with a given name. Leave that field nil to let the library select the first compatible chain from Certificates.
+	// tlsConfig.BuildNameToCertificate()
 
 	// create a new http server
 	server := &http.Server{
@@ -40,5 +42,3 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World"))
 }
-
-
