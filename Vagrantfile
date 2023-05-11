@@ -1,6 +1,5 @@
 $go = <<-SCRIPT
 /vagrant/provision/go.sh
-/vagrant/provision/protoc.sh
 SCRIPT
 
 Vagrant.configure("2") do |config|

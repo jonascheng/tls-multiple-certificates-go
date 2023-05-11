@@ -25,9 +25,7 @@ func main() {
 
 	// set trusted CA certificate pool
 	tlsConfig.RootCAs = caCertPool
-	// set server name
-	tlsConfig.ServerName = "server-v1"
-	
+
 	// create a new http client
 	client := &http.Client{
 		// configure TLS

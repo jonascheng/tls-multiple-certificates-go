@@ -4,7 +4,9 @@ package main
 import (
 	"crypto/tls"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 // define a call back function GetCertificate
@@ -14,13 +16,21 @@ import (
 func GetCertificate(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
 	// log the client hello message
 	log.Printf("Client hello: %+v", clientHello)
-	// load certificates from files according to the server name
-	if clientHello.ServerName == "server-v1" {
+
+	// specify rand seed with current time
+	rand.Seed(time.Now().UnixNano())
+	// generate a random number between 0 and 100
+	randNum := rand.Intn(100)
+
+	if randNum%2 == 0 {
+		log.Printf("Using certificate v1")
 		certPair, _ := tls.LoadX509KeyPair("server-v1.crt", "server-v1.key")
 		return &certPair, nil
+	} else {
+		log.Printf("Using certificate v2")
+		certPair, _ := tls.LoadX509KeyPair("server-v2.crt", "server-v2.key")
+		return &certPair, nil
 	}
-	certPair, _ := tls.LoadX509KeyPair("server-v2.crt", "server-v2.key")
-	return &certPair, nil
 }
 
 func main() {
